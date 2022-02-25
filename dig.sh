@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 while [ 1 ]; do
-	read -p "Input Hostname : " hostname
+	while [ 1 ]; do
+		read -p "Input Hostname : " hostname
+		[ -z "$hostname" ] && echo "Please Input Hostname..." || break
+	done
 	unset A_RECORD MX_RECORD MAIL_RECORD IPINFO_A IPINFO_MAIL
 	A_RECORD=$(dig +short a $hostname)
 	MX_RECORD=$(dig +short MX $hostname)
@@ -9,7 +12,7 @@ while [ 1 ]; do
 	[ -z "$A_RECORD" ] && IPINFO_A="No IP Found" || IPINFO_A=$(curl -s ipinfo.io/$A_RECORD | grep org | xargs | cut -f1 -d ",")
 	[ -z "$MAIL_RECORD" ] && IPINFO_MAIL="No IP Found" || IPINFO_MAIL=$(curl -s ipinfo.io/$MAIL_RECORD | grep org | xargs | cut -f1 -d ",")
 	
-	#uncomment if you're using WSL2. automatically copies A record to clipboard      echo $A_RECORD | /mnt/c/Windows/System32/clip.exe     < use xclip if not WSL2
+	echo $A_RECORD | /mnt/c/Windows/System32/clip.exe
 	echo
 	echo "NS record for $hostname"
 	dig +short ns $hostname
