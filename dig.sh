@@ -9,8 +9,8 @@ while [ 1 ]; do
 	A_RECORD=$(dig +short a $hostname)
 	MX_RECORD=$(dig +short MX $hostname)
 	MAIL_RECORD=$(dig +short a mail.$hostname)
-	[ -z "$A_RECORD" ] && IPINFO_A="No IP Found" || IPINFO_A=$(curl -s ipinfo.io/$A_RECORD | grep org | xargs | cut -f1 -d ",")
-	[ -z "$MAIL_RECORD" ] && IPINFO_MAIL="No IP Found" || IPINFO_MAIL=$(curl -s ipinfo.io/$MAIL_RECORD | grep org | xargs | cut -f1 -d ",")
+	[ -z "$A_RECORD" ] && IPINFO_A="No IP Found" || IPINFO_A=$(curl -s ipinfo.io/$A_RECORD | grep "\"org\":" | xargs | cut -f1 -d ",")
+	[ -z "$MAIL_RECORD" ] && IPINFO_MAIL="No IP Found" || IPINFO_MAIL=$(curl -s ipinfo.io/$MAIL_RECORD | grep "\"org\":" | xargs | cut -f1 -d ",")
 	
 	#echo $A_RECORD | /mnt/c/Windows/System32/clip.exe
 	echo
