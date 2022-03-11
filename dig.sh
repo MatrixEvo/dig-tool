@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 while [ 1 ]; do
+	unset hostname A_RECORD MX_RECORD MAIL_RECORD IPINFO_A IPINFO_MAIL
 	while [ 1 ]; do
-		read -p "Input Hostname : " hostname
+		read -p "Input Hostname : " hostname </dev/tty
 		[ -z "$hostname" ] && echo "Please Input Hostname..." || break
 	done
-	unset A_RECORD MX_RECORD MAIL_RECORD IPINFO_A IPINFO_MAIL
 	A_RECORD=$(dig +short a $hostname)
 	MX_RECORD=$(dig +short MX $hostname)
 	MAIL_RECORD=$(dig +short a mail.$hostname)
