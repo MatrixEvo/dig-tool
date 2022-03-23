@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 while [ 1 ]; do
-	unset hostname A_RECORD MX_RECORD MAIL_RECORD IPINFO_A IPINFO_MAIL
+	unset hostname NS_RECORD A_RECORD MX_RECORD MAIL_RECORD WEBMAIL_RECORD TXT_RECORD PTR_RECORD IPINFO_A IPINFO_MAIL IPINFO_WEBMAIL
 	while [ 1 ]; do
 		read -p "Input Hostname : " hostname </dev/tty
 		[ -z "$hostname" ] && echo "Please Input Hostname..." || break
