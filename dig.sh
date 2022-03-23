@@ -24,18 +24,18 @@ while [ 1 ]; do
 	echo
 	echo "A record for $hostname"
 	[ -z "$A_RECORD" ] || printf "$A_RECORD\n"
-	[ -z "$A_RECORD" ] || echo $IPINFO_A
+	[ -z "$IPINFO_A" ] || echo $IPINFO_A
 	echo
 	echo "MX record for $hostname"
 	[ -z "$MX_RECORD" ] || printf "$MX_RECORD\n"
 	echo
 	echo "A record for mail.$hostname"
 	[ -z "$MAIL_RECORD" ] || printf "$MAIL_RECORD\n"
-	[ -z "$MAIL_RECORD" ] || echo $IPINFO_MAIL
+	[ -z "$IPINFO_MAIL" ] || echo $IPINFO_MAIL
 	echo
 	echo "A record for webmail.$hostname"
 	[ -z "$WEBMAIL_RECORD" ] || printf "$WEBMAIL_RECORD\n"
-	[ -z "$WEBMAIL_RECORD" ] || echo $IPINFO_WEBMAIL
+	[ -z "$IPINFO_WEBMAIL" ] || echo $IPINFO_WEBMAIL
 	echo
 	echo "TXT record for $hostname"
 	[ -z "$TXT_RECORD" ] || printf "$TXT_RECORD\n"
