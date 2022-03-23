@@ -9,8 +9,10 @@ while [ 1 ]; do
 	A_RECORD=$(dig +short a $hostname)
 	MX_RECORD=$(dig +short MX $hostname)
 	MAIL_RECORD=$(dig +short a mail.$hostname)
-	[ -z "$A_RECORD" ] && IPINFO_A="No IP Found" || IPINFO_A=$(curl -s ipinfo.io/$A_RECORD | grep "\"org\":" | xargs | cut -f1 -d ",")
-	[ -z "$MAIL_RECORD" ] && IPINFO_MAIL="No IP Found" || IPINFO_MAIL=$(curl -s ipinfo.io/$MAIL_RECORD | grep "\"org\":" | xargs | cut -f1 -d ",")
+	WEBMAIL_RECORD=$(dig +short a webmail.$hostname)
+	[ -z "$A_RECORD" ] || IPINFO_A=$(curl -s ipinfo.io/$A_RECORD | grep "\"org\":" | xargs | cut -f1 -d ",")
+	[ -z "$MAIL_RECORD" ] || IPINFO_MAIL=$(curl -s ipinfo.io/$MAIL_RECORD | grep "\"org\":" | xargs | cut -f1 -d ",")
+	[ -z "$WEBMAIL_RECORD" ] || IPINFO_MAIL=$(curl -s ipinfo.io/$WEBMAIL_RECORD | grep "\"org\":" | xargs | cut -f1 -d ",")
 	
 	#echo $A_RECORD | /mnt/c/Windows/System32/clip.exe
 	echo
@@ -27,11 +29,14 @@ while [ 1 ]; do
 	echo "A record for mail.$hostname"
 	dig +short a mail.$hostname
 	echo $IPINFO_MAIL
+	echo "A record for webmail.$hostname"
+	dig +short a webmail.$hostname
+	echo $IPINFO_WEBMAIL
 	echo
 	echo "TXT record for $hostname"
 	dig +short txt $hostname 
 	echo
 	echo "PTR record for $hostname"
-	[ -z "$A_RECORD" ] && echo "No IP Found" || dig -x $A_RECORD | grep PTR
+	[ -z "$A_RECORD" ] || dig -x $A_RECORD | grep PTR
 	echo
 done
