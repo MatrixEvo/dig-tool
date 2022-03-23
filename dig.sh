@@ -7,7 +7,7 @@ while [ 1 ]; do
 		[ -z "$HOSTNAME" ] && echo "Please Input Hostname..." || break
 	done
 	NS_RECORD=$(dig +short ns $HOSTNAME @8.8.8.8 | sort)
-	A_RECORD=$(dig +short a $HOSTNAME @8.8.8.8 | sort)
+	A_RECORD=$(dig +short a $HOSTNAME | sort)
 	MX_RECORD=$(dig +short MX $HOSTNAME @8.8.8.8 | sort)
 	MAIL_RECORD=$(dig +short a mail.$HOSTNAME @8.8.8.8 | sort)
 	WEBMAIL_RECORD=$(dig +short a webmail.$HOSTNAME @8.8.8.8 | sort)
