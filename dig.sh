@@ -8,11 +8,11 @@ red="\033[0;31m"
 lightred="\033[1;31m"
 yellow="\033[1;33m"
 
-function header() { echo -e "${blue}${1}${end}" ; }
-function records() { echo -e "${darkyellow}${1}${end}" ; }
-function ipinfo_records() { echo -e "${lightred}${1}${end}" ; }
-function yellow() { echo -e "${yellow}${1}${end}" ; }
-function red() { echo -e "${red}${1}${end}" ; }
+header() { echo -e "${blue}${1}${end}" ; }
+records() { echo -e "${darkyellow}${1}${end}" ; }
+ipinfo_records() { echo -e "${lightred}${1}${end}" ; }
+yellow() { echo -e "${yellow}${1}${end}" ; }
+red() { echo -e "${red}${1}${end}" ; }
 
 while true; do
   unset hostname ns_record a_record mx_record mail_record webmail_record txt_record ptr_record ipinfo_a_record ipinfo_mail_record ipinfo_webmail_record
