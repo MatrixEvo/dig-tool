@@ -10,7 +10,7 @@ yellow="\033[1;33m"
 
 function header() { echo -e "${blue}${1}${end}" ; }
 function records() { echo -e "${darkyellow}${1}${end}" ; }
-function ipinforecords() { echo -e "${lightred}${1}${end}" ; }
+function ipinfo_records() { echo -e "${lightred}${1}${end}" ; }
 function yellow() { echo -e "${yellow}${1}${end}" ; }
 function red() { echo -e "${red}${1}${end}" ; }
 
@@ -36,18 +36,18 @@ while true; do
   echo
   header "A record for ${hostname}"
   [ -z "${a_record}" ] || records "${a_record}"
-  [ -z "${ipinfo_a_record}" ] || ipinforecords "${ipinfo_a_record}"
+  [ -z "${ipinfo_a_record}" ] || ipinfo_records "${ipinfo_a_record}"
   echo
   header "MX record for ${hostname}"
   [ -z "${mx_record}" ] || records "${mx_record}"
   echo
   header "A record for mail.${hostname}"
   [ -z "${mail_record}" ] || records "${mail_record}"
-  [ -z "${ipinfo_mail_record}" ] || ipinforecords "${ipinfo_mail_record}"
+  [ -z "${ipinfo_mail_record}" ] || ipinfo_records "${ipinfo_mail_record}"
   echo
   header "A record for webmail.${hostname}"
   [ -z "${webmail_record}" ] || records "${webmail_record}"
-  [ -z "${ipinfo_webmail_record}" ] || ipinforecords "${ipinfo_webmail_record}"
+  [ -z "${ipinfo_webmail_record}" ] || ipinfo_records "${ipinfo_webmail_record}"
   echo
   header "TXT record for ${hostname}"
   [ -z "${txt_record}" ] || records "${txt_record}"
