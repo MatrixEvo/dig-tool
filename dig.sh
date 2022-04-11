@@ -30,7 +30,7 @@ while true; do
   MAIL_RECORD=$(dig +short a mail."${HOSTNAME}" @8.8.8.8 | sort)
   WEBMAIL_RECORD=$(dig +short a webmail."${HOSTNAME}" @8.8.8.8 | sort)
   TXT_RECORD=$(dig +short txt "${HOSTNAME}" @8.8.8.8 | sort)
-  [ -z "${A_RECORD}" ] || PTR_RECORD=$(dig -x "${A_RECORD}" @8.8.8.8 | grep "PTR" | sort)
+  [ -z "${A_RECORD}" ] || PTR_RECORD=$(dig -x "${A_RECORD}" @8.8.8.8 | grep "PTR" | grep -v ";" | sort)
   [ -z "${A_RECORD}" ] || IPINFO_A=$(curl -s ipinfo.io/"$(echo "${A_RECORD}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
   [ -z "$MAIL_RECORD" ] || IPINFO_MAIL=$(curl -s ipinfo.io/"$(echo "${MAIL_RECORD}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
   [ -z "$WEBMAIL_RECORD" ] || IPINFO_WEBMAIL=$(curl -s ipinfo.io/"$(echo "${WEBMAIL_RECORD}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
