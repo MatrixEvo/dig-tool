@@ -18,11 +18,7 @@ while true; do
   unset HOSTNAME NS_RECORD A_RECORD MX_RECORD MAIL_RECORD WEBMAIL_RECORD TXT_RECORD PTR_RECORD IPINFO_A IPINFO_MAIL IPINFO_WEBMAIL
   while true; do
     read -r -p "$(yellow "Input Hostname : ")" HOSTNAME </dev/tty
-    if [ -z "${HOSTNAME}" ]; then
-      red "Please Input Hostname..."
-    else
-      break
-    fi
+    if [ -z "${HOSTNAME}" ]; then red "Please Input Hostname..." ; else break ; fi
   done
   NS_RECORD=$(dig +short ns "${HOSTNAME}" @8.8.8.8 | sort)
   A_RECORD=$(dig +short a "${HOSTNAME}" | sort)
@@ -30,7 +26,7 @@ while true; do
   MAIL_RECORD=$(dig +short a mail."${HOSTNAME}" @8.8.8.8 | sort)
   WEBMAIL_RECORD=$(dig +short a webmail."${HOSTNAME}" @8.8.8.8 | sort)
   TXT_RECORD=$(dig +short txt "${HOSTNAME}" @8.8.8.8 | sort)
-  [ -z "${A_RECORD}" ] || PTR_RECORD=$(dig -x "${A_RECORD}" @8.8.8.8 | grep "PTR" | grep -v ";" | sort)
+  [ -z "${A_RECORD}" ] || PTR_RECORD=$(dig -x "$(echo "${A_RECORD}" | head -n1)" @8.8.8.8 | grep "PTR" | grep -v ";" | sort)
   [ -z "${A_RECORD}" ] || IPINFO_A=$(curl -s ipinfo.io/"$(echo "${A_RECORD}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
   [ -z "$MAIL_RECORD" ] || IPINFO_MAIL=$(curl -s ipinfo.io/"$(echo "${MAIL_RECORD}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
   [ -z "$WEBMAIL_RECORD" ] || IPINFO_WEBMAIL=$(curl -s ipinfo.io/"$(echo "${WEBMAIL_RECORD}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
