@@ -32,27 +32,27 @@ while true; do
   [ -z "$WEBMAIL_RECORD" ] || IPINFO_WEBMAIL=$(curl -s ipinfo.io/"$(echo "${WEBMAIL_RECORD}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
   echo
   header "NS record for ${HOSTNAME}"
-  [ -z "${NS_RECORD}" ] || printf "%s\n" "$(records "${NS_RECORD}")"
+  [ -z "${NS_RECORD}" ] || records "${NS_RECORD}"
   echo
   header "A record for ${HOSTNAME}"
-  [ -z "${A_RECORD}" ] || printf "%s\n" "$(records "${A_RECORD}")"
+  [ -z "${A_RECORD}" ] || records "${A_RECORD}"
   [ -z "${IPINFO_A}" ] || ipinforecords "${IPINFO_A}"
   echo
   header "MX record for ${HOSTNAME}"
-  [ -z "${MX_RECORD}" ] || printf "%s\n" "$(records "${MX_RECORD}")"
+  [ -z "${MX_RECORD}" ] || records "${MX_RECORD}"
   echo
   header "A record for mail.${HOSTNAME}"
-  [ -z "${MAIL_RECORD}" ] || printf "%s\n" "$(records "${MAIL_RECORD}")"
+  [ -z "${MAIL_RECORD}" ] || records "${MAIL_RECORD}"
   [ -z "${IPINFO_MAIL}" ] || ipinforecords "${IPINFO_MAIL}"
   echo
   header "A record for webmail.${HOSTNAME}"
-  [ -z "${WEBMAIL_RECORD}" ] || printf "%s\n" "$(records "${WEBMAIL_RECORD}")"
+  [ -z "${WEBMAIL_RECORD}" ] || records "${WEBMAIL_RECORD}"
   [ -z "${IPINFO_WEBMAIL}" ] || ipinforecords "${IPINFO_WEBMAIL}"
   echo
   header "TXT record for ${HOSTNAME}"
-  [ -z "${TXT_RECORD}" ] || printf "%s\n" "$(records "${TXT_RECORD}")"
+  [ -z "${TXT_RECORD}" ] || records "${TXT_RECORD}"
   echo
   header "PTR record for ${HOSTNAME}"
-  [ -z "${PTR_RECORD}" ] || printf "%s\n" "$(records "${PTR_RECORD}")"
+  [ -z "${PTR_RECORD}" ] || records "${PTR_RECORD}"
   echo
 done
