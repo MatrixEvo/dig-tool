@@ -15,44 +15,44 @@ function yellow() { echo -e "${yellow}${1}${end}" ; }
 function red() { echo -e "${red}${1}${end}" ; }
 
 while true; do
-  unset HOSTNAME NS_RECORD A_RECORD MX_RECORD MAIL_RECORD WEBMAIL_RECORD TXT_RECORD PTR_RECORD IPINFO_A IPINFO_MAIL IPINFO_WEBMAIL
+  unset hostname ns_record a_record mx_record mail_record webmail_record txt_record ptr_record ipinfo_a_record ipinfo_mail_record ipinfo_webmail_record
   while true; do
-    read -r -p "$(yellow "Input Hostname : ")" HOSTNAME </dev/tty
-    if [ -z "${HOSTNAME}" ]; then red "Please Input Hostname..." ; else break ; fi
+    read -r -p "$(yellow "Input Hostname : ")" hostname </dev/tty
+    if [ -z "${hostname}" ]; then red "Please Input Hostname..." ; else break ; fi
   done
-  NS_RECORD=$(dig +short ns "${HOSTNAME}" @8.8.8.8 | sort)
-  A_RECORD=$(dig +short a "${HOSTNAME}" | sort)
-  MX_RECORD=$(dig +short MX "${HOSTNAME}" @8.8.8.8 | sort)
-  MAIL_RECORD=$(dig +short a mail."${HOSTNAME}" @8.8.8.8 | sort)
-  WEBMAIL_RECORD=$(dig +short a webmail."${HOSTNAME}" @8.8.8.8 | sort)
-  TXT_RECORD=$(dig +short txt "${HOSTNAME}" @8.8.8.8 | sort)
-  [ -z "${A_RECORD}" ] || PTR_RECORD=$(dig -x "$(echo "${A_RECORD}" | head -n1)" @8.8.8.8 | grep "PTR" | grep -v ";" | sort)
-  [ -z "${A_RECORD}" ] || IPINFO_A=$(curl -s ipinfo.io/"$(echo "${A_RECORD}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
-  [ -z "$MAIL_RECORD" ] || IPINFO_MAIL=$(curl -s ipinfo.io/"$(echo "${MAIL_RECORD}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
-  [ -z "$WEBMAIL_RECORD" ] || IPINFO_WEBMAIL=$(curl -s ipinfo.io/"$(echo "${WEBMAIL_RECORD}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
+  ns_record=$(dig +short ns "${hostname}" @8.8.8.8 | sort)
+  a_record=$(dig +short a "${hostname}" | sort)
+  mx_record=$(dig +short MX "${hostname}" @8.8.8.8 | sort)
+  mail_record=$(dig +short a mail."${hostname}" @8.8.8.8 | sort)
+  webmail_record=$(dig +short a webmail."${hostname}" @8.8.8.8 | sort)
+  txt_record=$(dig +short txt "${hostname}" @8.8.8.8 | sort)
+  [ -z "${a_record}" ] || ptr_record=$(dig -x "$(echo "${a_record}" | head -n1)" @8.8.8.8 | grep "PTR" | grep -v ";" | sort)
+  [ -z "${a_record}" ] || ipinfo_a_record=$(curl -s ipinfo.io/"$(echo "${a_record}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
+  [ -z "${mail_record}" ] || ipinfo_mail_record=$(curl -s ipinfo.io/"$(echo "${mail_record}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
+  [ -z "${webmail_record}" ] || ipinfo_webmail_record=$(curl -s ipinfo.io/"$(echo "${webmail_record}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
   echo
-  header "NS record for ${HOSTNAME}"
-  [ -z "${NS_RECORD}" ] || records "${NS_RECORD}"
+  header "NS record for ${hostname}"
+  [ -z "${ns_record}" ] || records "${ns_record}"
   echo
-  header "A record for ${HOSTNAME}"
-  [ -z "${A_RECORD}" ] || records "${A_RECORD}"
-  [ -z "${IPINFO_A}" ] || ipinforecords "${IPINFO_A}"
+  header "A record for ${hostname}"
+  [ -z "${a_record}" ] || records "${a_record}"
+  [ -z "${ipinfo_a_record}" ] || ipinforecords "${ipinfo_a_record}"
   echo
-  header "MX record for ${HOSTNAME}"
-  [ -z "${MX_RECORD}" ] || records "${MX_RECORD}"
+  header "MX record for ${hostname}"
+  [ -z "${mx_record}" ] || records "${mx_record}"
   echo
-  header "A record for mail.${HOSTNAME}"
-  [ -z "${MAIL_RECORD}" ] || records "${MAIL_RECORD}"
-  [ -z "${IPINFO_MAIL}" ] || ipinforecords "${IPINFO_MAIL}"
+  header "A record for mail.${hostname}"
+  [ -z "${mail_record}" ] || records "${mail_record}"
+  [ -z "${ipinfo_mail_record}" ] || ipinforecords "${ipinfo_mail_record}"
   echo
-  header "A record for webmail.${HOSTNAME}"
-  [ -z "${WEBMAIL_RECORD}" ] || records "${WEBMAIL_RECORD}"
-  [ -z "${IPINFO_WEBMAIL}" ] || ipinforecords "${IPINFO_WEBMAIL}"
+  header "A record for webmail.${hostname}"
+  [ -z "${webmail_record}" ] || records "${webmail_record}"
+  [ -z "${ipinfo_webmail_record}" ] || ipinforecords "${ipinfo_webmail_record}"
   echo
-  header "TXT record for ${HOSTNAME}"
-  [ -z "${TXT_RECORD}" ] || records "${TXT_RECORD}"
+  header "TXT record for ${hostname}"
+  [ -z "${txt_record}" ] || records "${txt_record}"
   echo
-  header "PTR record for ${HOSTNAME}"
-  [ -z "${PTR_RECORD}" ] || records "${PTR_RECORD}"
+  header "PTR record for ${hostname}"
+  [ -z "${ptr_record}" ] || records "${ptr_record}"
   echo
 done
