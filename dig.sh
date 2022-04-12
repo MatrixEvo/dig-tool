@@ -18,7 +18,7 @@ while true; do
   unset hostname ns_record a_record mx_record mail_record webmail_record txt_record ptr_record ipinfo_a_record ipinfo_mail_record ipinfo_webmail_record
   while true; do
     read -r -p "$(yellow "Input Hostname : ")" hostname </dev/tty
-    if [ -z "${hostname}" ]; then red "Please Input Hostname..." ; else break ; fi
+    if [[ -z ${hostname} ]]; then red "Please Input Hostname..." ; else break ; fi
   done
   ns_record=$(dig +short ns "${hostname}" @8.8.8.8 | sort)
   a_record=$(dig +short a "${hostname}" | sort)
@@ -26,33 +26,33 @@ while true; do
   mail_record=$(dig +short a mail."${hostname}" @8.8.8.8 | sort)
   webmail_record=$(dig +short a webmail."${hostname}" @8.8.8.8 | sort)
   txt_record=$(dig +short txt "${hostname}" @8.8.8.8 | sort)
-  [ -z "${a_record}" ] || ptr_record=$(dig -x "$(echo "${a_record}" | head -n1)" @8.8.8.8 | grep "PTR" | grep -v ";" | sort)
-  [ -z "${a_record}" ] || ipinfo_a_record=$(curl -s ipinfo.io/"$(echo "${a_record}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
-  [ -z "${mail_record}" ] || ipinfo_mail_record=$(curl -s ipinfo.io/"$(echo "${mail_record}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
-  [ -z "${webmail_record}" ] || ipinfo_webmail_record=$(curl -s ipinfo.io/"$(echo "${webmail_record}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
+  [[ -z ${a_record} ]] || ptr_record=$(dig -x "$(echo "${a_record}" | head -n1)" @8.8.8.8 | grep "PTR" | grep -v ";" | sort)
+  [[ -z ${a_record} ]] || ipinfo_a_record=$(curl -s ipinfo.io/"$(echo "${a_record}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
+  [[ -z ${mail_record} ]] || ipinfo_mail_record=$(curl -s ipinfo.io/"$(echo "${mail_record}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
+  [[ -z ${webmail_record} ]] || ipinfo_webmail_record=$(curl -s ipinfo.io/"$(echo "${webmail_record}" | head -n1)" | grep "\"org\":" | xargs | cut -f1 -d ",")
   echo
   header "NS record for ${hostname}"
-  [ -z "${ns_record}" ] || records "${ns_record}"
+  [[ -z ${ns_record} ]] || records "${ns_record}"
   echo
   header "A record for ${hostname}"
-  [ -z "${a_record}" ] || records "${a_record}"
-  [ -z "${ipinfo_a_record}" ] || ipinfo_records "${ipinfo_a_record}"
+  [[ -z ${a_record} ]] || records "${a_record}"
+  [[ -z ${ipinfo_a_record} ]] || ipinfo_records "${ipinfo_a_record}"
   echo
   header "MX record for ${hostname}"
-  [ -z "${mx_record}" ] || records "${mx_record}"
+  [[ -z ${mx_record} ]] || records "${mx_record}"
   echo
   header "A record for mail.${hostname}"
-  [ -z "${mail_record}" ] || records "${mail_record}"
-  [ -z "${ipinfo_mail_record}" ] || ipinfo_records "${ipinfo_mail_record}"
+  [[ -z ${mail_record} ]] || records "${mail_record}"
+  [[ -z ${ipinfo_mail_record} ]] || ipinfo_records "${ipinfo_mail_record}"
   echo
   header "A record for webmail.${hostname}"
-  [ -z "${webmail_record}" ] || records "${webmail_record}"
-  [ -z "${ipinfo_webmail_record}" ] || ipinfo_records "${ipinfo_webmail_record}"
+  [[ -z ${webmail_record} ]] || records "${webmail_record}"
+  [[ -z ${ipinfo_webmail_record} ]] || ipinfo_records "${ipinfo_webmail_record}"
   echo
   header "TXT record for ${hostname}"
-  [ -z "${txt_record}" ] || records "${txt_record}"
+  [[ -z ${txt_record} ]] || records "${txt_record}"
   echo
   header "PTR record for ${hostname}"
-  [ -z "${ptr_record}" ] || records "${ptr_record}"
+  [[ -z ${ptr_record} ]] || records "${ptr_record}"
   echo
 done
