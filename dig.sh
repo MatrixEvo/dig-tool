@@ -9,7 +9,7 @@ lightred="\033[1;31m"
 yellow="\033[1;33m"
 
 header() { echo -e "${blue}${1}${end}" ; }
-records() { echo -e "${darkyellow}${1}${end}" ; }
+records() { if [[ "${1}" =~ [.]|"PTR" ]]; then echo -e "${darkyellow}${1}${end}" ; fi ; }
 ipinfo_records() { echo -e "${lightred}${1}${end}" ; }
 yellow() { echo -e "${yellow}${1}${end}" ; }
 red() { echo -e "${red}${1}${end}" ; }
@@ -36,6 +36,7 @@ while true; do
   echo
   header "A record for ${hostname}"
   [[ -z ${a_record} ]] || records "${a_record}"
+  [[ -z ${a_record} ]] || echo "${a_record}" | while read ptr_a_record; do records "$(dig -x "${ptr_a_record}" @8.8.8.8 | grep "PTR" | grep -v ";")" ; done
   [[ -z ${ipinfo_a_record} ]] || ipinfo_records "${ipinfo_a_record}"
   echo
   header "MX record for ${hostname}"
@@ -43,16 +44,15 @@ while true; do
   echo
   header "A record for mail.${hostname}"
   [[ -z ${mail_record} ]] || records "${mail_record}"
+  [[ -z ${mail_record} ]] || echo "${mail_record}" | while read ptr_mail_record; do records "$(dig -x "${ptr_mail_record}" @8.8.8.8 | grep "PTR" | grep -v ";")" ; done
   [[ -z ${ipinfo_mail_record} ]] || ipinfo_records "${ipinfo_mail_record}"
   echo
   header "A record for webmail.${hostname}"
   [[ -z ${webmail_record} ]] || records "${webmail_record}"
+  [[ -z ${webmail_record} ]] || echo "${webmail_record}" | while read ptr_webmail_record; do records "$(dig -x "${ptr_webmail_record}" @8.8.8.8 | grep "PTR" | grep -v ";")" ; done
   [[ -z ${ipinfo_webmail_record} ]] || ipinfo_records "${ipinfo_webmail_record}"
   echo
   header "TXT record for ${hostname}"
   [[ -z ${txt_record} ]] || records "${txt_record}"
-  echo
-  header "PTR record for ${hostname}"
-  [[ -z ${ptr_record} ]] || records "${ptr_record}"
   echo
 done
