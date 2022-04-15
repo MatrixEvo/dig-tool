@@ -40,7 +40,7 @@ while true; do
   echo
   header "A record for ${hostname}"
   [[ -z ${a_record} ]] || records "${a_record}"
-  if [[ ${ptr_a_record} =~ "PTR" ]]; then records "${ptr_a_record}" ; fi
+  [[ ${ptr_a_record} =~ "PTR" ]] && records "${ptr_a_record}"
   [[ -z ${ipinfo_a_record} ]] || ipinfo_records "${ipinfo_a_record}"
   echo
   header "MX record for ${hostname}"
@@ -48,12 +48,12 @@ while true; do
   echo
   header "A record for mail.${hostname}"
   [[ -z ${mail_record} ]] || records "${mail_record}"
-  if [[ ${ptr_mail_record} =~ "PTR" ]]; then records "${ptr_mail_record}" ; fi
+  [[ ${ptr_mail_record} =~ "PTR" ]] && records "${ptr_mail_record}"
   [[ -z ${ipinfo_mail_record} ]] || ipinfo_records "${ipinfo_mail_record}"
   echo
   header "A record for webmail.${hostname}"
   [[ -z ${webmail_record} ]] || records "${webmail_record}"
-  if [[ ${ptr_webmail_record} =~ "PTR" ]]; then records "${ptr_webmail_record}" ; fi
+  [[ ${ptr_webmail_record} =~ "PTR" ]] && records "${ptr_webmail_record}"
   [[ -z ${ipinfo_webmail_record} ]] || ipinfo_records "${ipinfo_webmail_record}"
   echo
   header "TXT record for ${hostname}"
