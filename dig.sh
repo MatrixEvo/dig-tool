@@ -16,12 +16,8 @@ red() { echo -e "${red}${1}${end}" ; }
 check_valid_ip() { grep -oE "(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])" ; }
 ipinfo_org_only() { grep "\"org\":" | xargs | cut -f1 -d "," ; }
 
-while true; do
-  unset hostname ns_record a_record mx_record mail_record webmail_record txt_record ptr_a_record ptr_a ptr_mail_record ptr_mail ptr_webmail_record ptr_webmail ipinfo_a_record ipinfo_mail_record ipinfo_webmail_record
-  while true; do
-    read -r -p "$(yellow "Input Hostname : ")" hostname </dev/tty
-    if [[ -z ${hostname} ]]; then red "Please Input Hostname..." ; else break ; fi
-  done
+start() {
+  local ns_record a_record mx_record mail_record webmail_record txt_record ptr_a_record ptr_a ptr_mail_record ptr_mail ptr_webmail_record ptr_webmail ipinfo_a_record ipinfo_mail_record ipinfo_webmail_record
   ns_record=$(dig +short ns "${hostname}" @8.8.8.8 | sort)
   a_record=$(dig +short a "${hostname}" | sort)
   mx_record=$(dig +short MX "${hostname}" @8.8.8.8 | sort)
@@ -59,4 +55,10 @@ while true; do
   header "TXT record for ${hostname}"
   [[ -z ${txt_record} ]] || records "${txt_record}"
   echo
+}
+
+while IFS= read -rep "$(yellow "Input Hostname : ")" hostname </dev/tty ; do
+  if [[ -z ${hostname} ]]; then red "Please Input Hostname..." ; fi
+  history -s "${hostname}"
+  start
 done
