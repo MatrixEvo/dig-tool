@@ -31,28 +31,28 @@ start() {
   [[ -z ${mail_record} ]] || ipinfo_mail_record=$(curl -s ipinfo.io/"$(echo "${mail_record}" | head -n1)" | ipinfo_org_only)
   [[ -z ${webmail_record} ]] || ipinfo_webmail_record=$(curl -s ipinfo.io/"$(echo "${webmail_record}" | head -n1)" | ipinfo_org_only)
   echo
-  header "NS record for ${hostname}"
+  header "NS record for \"${hostname}\""
   [[ -z ${ns_record} ]] || records "${ns_record}"
   echo
-  header "A record for ${hostname}"
+  header "A record for \"${hostname}\""
   [[ -z ${a_record} ]] || records "${a_record}"
   [[ ${ptr_a_record} =~ "PTR" ]] && records "${ptr_a_record}"
   [[ -z ${ipinfo_a_record} ]] || ipinfo_records "${ipinfo_a_record}"
   echo
-  header "MX record for ${hostname}"
+  header "MX record for \"${hostname}\""
   [[ -z ${mx_record} ]] || records "${mx_record}"
   echo
-  header "A record for mail.${hostname}"
+  header "A record for \"mail.${hostname}\""
   [[ -z ${mail_record} ]] || records "${mail_record}"
   [[ ${ptr_mail_record} =~ "PTR" ]] && records "${ptr_mail_record}"
   [[ -z ${ipinfo_mail_record} ]] || ipinfo_records "${ipinfo_mail_record}"
   echo
-  header "A record for webmail.${hostname}"
+  header "A record for \"webmail.${hostname}\""
   [[ -z ${webmail_record} ]] || records "${webmail_record}"
   [[ ${ptr_webmail_record} =~ "PTR" ]] && records "${ptr_webmail_record}"
   [[ -z ${ipinfo_webmail_record} ]] || ipinfo_records "${ipinfo_webmail_record}"
   echo
-  header "TXT record for ${hostname}"
+  header "TXT record for \"${hostname}\""
   [[ -z ${txt_record} ]] || records "${txt_record}"
   echo
 }
@@ -63,7 +63,7 @@ start_ip() {
   [[ -z ${a_record} ]] || ptr_a_record=$(echo "${a_record}" | check_valid_ip | while read -r ptr_a; do dig +noall +answer -x "${ptr_a}" @8.8.8.8 ; done)
   [[ -z ${a_record} ]] || ipinfo_a_record=$(curl -s ipinfo.io/"$(echo "${a_record}" | head -n1)" | ipinfo_org_only)
   echo
-  header "A record for ${hostname}"
+  header "A record for \"${hostname}\""
   [[ -z ${a_record} ]] || records "${a_record}"
   [[ ${ptr_a_record} =~ "PTR" ]] && records "${ptr_a_record}"
   [[ -z ${ipinfo_a_record} ]] || ipinfo_records "${ipinfo_a_record}"
