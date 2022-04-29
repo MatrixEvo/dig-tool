@@ -57,12 +57,29 @@ start() {
   echo
 }
 
+start_ip() {
+  local a_record
+  a_record=$(dig +short a "${hostname}" | sort)
+  [[ -z ${a_record} ]] || ptr_a_record=$(echo "${a_record}" | check_valid_ip | while read -r ptr_a; do dig +noall +answer -x "${ptr_a}" @8.8.8.8 ; done)
+  [[ -z ${a_record} ]] || ipinfo_a_record=$(curl -s ipinfo.io/"$(echo "${a_record}" | head -n1)" | ipinfo_org_only)
+  echo
+  header "A record for ${hostname}"
+  [[ -z ${a_record} ]] || records "${a_record}"
+  [[ ${ptr_a_record} =~ "PTR" ]] && records "${ptr_a_record}"
+  [[ -z ${ipinfo_a_record} ]] || ipinfo_records "${ipinfo_a_record}"
+  echo
+}
+
 while IFS= read -rep "$(yellow "Input Hostname : ")" hostname1 </dev/tty ; do
-  hostname=$(echo "${hostname1}" | grep -oE "(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])")
-  if [[ -z ${hostname} ]]; then hostname=$(echo "${hostname1}" | sed 's/:/\n/g' | sed 's/\//\n/g' | grep "[.]" ) ; fi
-  if [[ -n ${hostname} ]]; then
+  ip=1
+  hostname=$(echo "${hostname1}" | check_valid_ip | head -n1)
+  if [[ -z ${hostname} ]]; then ip=0 ; hostname=$(echo "${hostname1}" | sed 's/:/\n/g' | sed 's/\//\n/g' | grep "[.]" | head -n1 ) ; fi
+  if [[ -n ${hostname} ]] && [[ ${ip} == 0 ]]; then
     history -s "${hostname}"
     start
+  elif [[ -n ${hostname} ]] && [[ ${ip} == 1 ]]; then
+    history -s "${hostname}"
+    start_ip
   fi
   if [[ -z ${hostname} ]]; then red "Please Input Hostname..." ; fi
 done
