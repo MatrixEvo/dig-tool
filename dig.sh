@@ -19,7 +19,7 @@ ipinfo_org_only() { grep "\"org\":" | xargs | cut -f1 -d "," ; }
 start() {
   local ns_record a_record mx_record mail_record webmail_record txt_record ptr_a_record ptr_a ptr_mail_record ptr_mail ptr_webmail_record ptr_webmail ipinfo_a_record ipinfo_mail_record ipinfo_webmail_record
   ns_record=$(dig +short ns "${hostname}" @8.8.8.8 | sort)
-  a_record=$(dig +short a "${hostname}" | sort)
+  a_record=$(dig +short a "${hostname}" @8.8.8.8 | sort)
   mx_record=$(dig +short MX "${hostname}" @8.8.8.8 | sort)
   mail_record=$(dig +short a mail."${hostname}" @8.8.8.8 | sort)
   webmail_record=$(dig +short a webmail."${hostname}" @8.8.8.8 | sort)
