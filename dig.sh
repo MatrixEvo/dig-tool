@@ -57,8 +57,12 @@ start() {
   echo
 }
 
-while IFS= read -rep "$(yellow "Input Hostname : ")" hostname </dev/tty ; do
+while IFS= read -rep "$(yellow "Input Hostname : ")" hostname1 </dev/tty ; do
+  hostname=$(echo "${hostname1}" | grep -oE "(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])")
+  if [[ -z ${hostname} ]]; then hostname=$(echo "${hostname1}" | sed 's/:/\n/g' | sed 's/\//\n/g' | grep "[.]" ) ; fi
+  if [[ -n ${hostname} ]]; then
+    history -s "${hostname}"
+    start
+  fi
   if [[ -z ${hostname} ]]; then red "Please Input Hostname..." ; fi
-  history -s "${hostname}"
-  start
 done
