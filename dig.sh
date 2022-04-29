@@ -58,7 +58,7 @@ start() {
 }
 
 start_ip() {
-  local a_record
+  local a_record ptr_a_record ipinfo_a_record
   a_record=$(dig +short a "${hostname}" | sort)
   [[ -z ${a_record} ]] || ptr_a_record=$(echo "${a_record}" | check_valid_ip | while read -r ptr_a; do dig +noall +answer -x "${ptr_a}" @8.8.8.8 ; done)
   [[ -z ${a_record} ]] || ipinfo_a_record=$(curl -s ipinfo.io/"$(echo "${a_record}" | head -n1)" | ipinfo_org_only)
