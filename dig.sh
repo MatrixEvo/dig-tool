@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #Dig tool that checks NS , A , MX , TXT , PTR with IP Org
-
+#Try using without downloading >" curl -s https://raw.githubusercontent.com/MatrixEvo/dig-tool/main/dig.sh | bash "<
 end="\033[0m"
 darkyellow="\033[0;33m"
 blue="\033[1;34m"
