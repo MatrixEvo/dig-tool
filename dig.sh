@@ -73,7 +73,7 @@ start_ip() {
 while IFS= read -rep "$(yellow "Input Hostname : ")" hostname1 </dev/tty ; do
   ip=1
   hostname=$(echo "${hostname1}" | check_valid_ip | head -n1)
-  if [[ -z ${hostname} ]]; then ip=0 ; hostname=$(echo "${hostname1}" | sed 's/[!@#$%^&*()\/:?;_]/\n/g' | grep "[.]" | head -n1 ) ; fi
+  if [[ -z ${hostname} ]]; then ip=0 ; hostname=$(echo "${hostname1}" | sed 's/[ !@#$%^&*()\/:?;_]/\n/g' | grep "[.]" | head -n1 ) ; fi
   if [[ -n ${hostname} ]] && [[ ${ip} == 0 ]]; then
     history -s "${hostname}"
     start
