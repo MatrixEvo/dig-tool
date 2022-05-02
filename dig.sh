@@ -77,7 +77,7 @@ while IFS= read -rep "$(yellow "Input Hostname : ")" inputhostname </dev/tty ; d
     ip=0
     hostname=$(echo "${inputhostname}" | sed 's/[=+,\"<> !@#$%^&*()\/:?;_]/\n/g' | grep "[.]" | head -n1 )
   fi
-  if [[ -n ${hostname} ]] && [[ -z ${lasthostname} ]] || [[ -n ${hostname} ]] && [[ ! ${lasthostname} == "${hostname}" ]]; then
+  if [[ -n ${hostname} ]] && [[ ! ${lasthostname} == "${hostname}" ]]; then
     lasthostname=${hostname}
     history -s "${hostname}"
   fi
