@@ -70,15 +70,20 @@ start_ip() {
   echo
 }
 
-while IFS= read -rep "$(yellow "Input Hostname : ")" hostname1 </dev/tty ; do
+while IFS= read -rep "$(yellow "Input Hostname : ")" inputhostname </dev/tty ; do
   ip=1
-  hostname=$(echo "${hostname1}" | check_valid_ip | head -n1)
-  if [[ -z ${hostname} ]]; then ip=0 ; hostname=$(echo "${hostname1}" | sed 's/[=+,\"<> !@#$%^&*()\/:?;_]/\n/g' | grep "[.]" | head -n1 ) ; fi
-  if [[ -n ${hostname} ]] && [[ ${ip} == 0 ]]; then
+  hostname=$(echo "${inputhostname}" | check_valid_ip | head -n1)
+  if [[ -z ${hostname} ]]; then
+    ip=0
+    hostname=$(echo "${inputhostname}" | sed 's/[=+,\"<> !@#$%^&*()\/:?;_]/\n/g' | grep "[.]" | head -n1 )
+  fi
+  if [[ -n ${hostname} ]] && [[ -z ${lasthostname} ]] || [[ -n ${hostname} ]] && [[ ! ${lasthostname} == "${hostname}" ]]; then
+    lasthostname=${hostname}
     history -s "${hostname}"
+  fi
+  if [[ -n ${hostname} ]] && [[ ${ip} == 0 ]]; then
     start
   elif [[ -n ${hostname} ]] && [[ ${ip} == 1 ]]; then
-    history -s "${hostname}"
     start_ip
   fi
   if [[ -z ${hostname} ]]; then red "Please Input Hostname..." ; fi
