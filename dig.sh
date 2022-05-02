@@ -24,7 +24,7 @@ check_hostname() {
   hostnamedotcount=$(echo "${hostname}" | grep -o "\." | wc -l)
   if [[ ${hostnamedotcount} -gt 1 ]]; then
     roothostname=$(echo "${hostname}" | cut -d'.' -f"${hostnamedotcount}"-)
-    if [[ ${#roothostname} == 6 ]]; then
+    if [[ ${#roothostname} == 6 ]] && [[ ${roothostname:0:3} =~ com|org|net|int|edu|gov|mil|biz ]]; then
       ns_record=$(echo "${hostname}" | cut -d'.' -f"$(("${hostnamedotcount}" - 1))"- | xargs dig +short ns @8.8.8.8 | sort)
       roothostname=$(echo "${hostname}" | cut -d'.' -f"$(("${hostnamedotcount}" - 1))"-)
     else
