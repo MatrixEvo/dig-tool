@@ -89,11 +89,11 @@ check_ip() {
 }
 
 start() {
-  while IFS= read -rep "$(yellow "Input Hostname : ")" inputhostname </dev/tty ; do
+  while IFS= read -rep "$(yellow "Input IP / Hostname : ")" inputhostname </dev/tty ; do
     unset ip hostname
     ip=$(echo "${inputhostname}" | check_valid_ip | head -n1)
     hostname=$(echo "${inputhostname}" | sed 's/[=+,\"<> !@#$%^&*()\/:?;_]/\n/g' | grep "\." | head -n1 )
-    if [[ -z ${ip} ]] && [[ -z ${hostname} ]] || [[ ${#hostname} -le 3 ]]; then red "Please Input Hostname..." ; break ; fi
+    if [[ -z ${ip} ]] && [[ -z ${hostname} ]] || [[ ${#hostname} -le 3 ]] || [[ -z $(echo "${hostname}" | cut -d'.' -f1) ]] || [[ -z $(echo "${hostname}" | cut -d'.' -f2) ]]; then red "Please Input Valid IP / Hostname..." ; break ; fi
     if [[ -n ${ip} ]]; then history -s "${ip}" ; check_ip ; elif [[ -n ${hostname} ]] ; then history -s "${hostname}" ; check_hostname ; fi
   done
 }
