@@ -29,7 +29,6 @@ check_hostname() {
       roothostname=$(echo "${hostname}" | cut -d'.' -f"$(("${hostnamedotcount}" - 1))"-)
     else
       ns_record=$(echo "${hostname}" | cut -d'.' -f"${hostnamedotcount}"- | xargs dig +short ns @8.8.8.8 | sort)
-      roothostname=$(echo "${hostname}" | cut -d'.' -f"${hostnamedotcount}"-)
     fi
   else
     ns_record=$(dig +short ns "${hostname}" @8.8.8.8 | sort)
