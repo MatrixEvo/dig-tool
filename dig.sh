@@ -81,13 +81,12 @@ check_hostname() {
 check_ip() {
   local a_record ptr_a_record ipinfo_a_record
   # GATHERING INFO
-  a_record="${ip}"
-  ptr_a_record=$(check_ptr "${a_record}")
-  ipinfo_a_record=$(ipinfo_org_only "${a_record}")
+  ptr_a_record=$(check_ptr "${ip}")
+  ipinfo_a_record=$(ipinfo_org_only "${ip}")
   # OUTPUT BELOW
   echo
   header "A record for ${ip}"
-  records "${a_record}"
+  records "${ip}"
   records "${ptr_a_record}"
   ipinfo_records "${ipinfo_a_record}"
   echo
