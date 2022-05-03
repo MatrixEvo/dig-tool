@@ -79,7 +79,7 @@ check_hostname() {
 }
 
 check_ip() {
-  local a_record ptr_a_record ipinfo_a_record
+  local ptr_a_record ipinfo_a_record
   # GATHERING INFO
   ptr_a_record=$(check_ptr "${ip}")
   ipinfo_a_record=$(ipinfo_org_only "${ip}")
