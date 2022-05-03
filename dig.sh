@@ -11,13 +11,13 @@ yellow="\033[1;33m"
 HISTCONTROL=erasedups
 
 header() { echo -e "${blue}${1}${end}" ; }
-records() { echo -e "${darkyellow}${1}${end}" ; }
-ipinfo_records() { echo -e "${lightred}${1}${end}" ; }
+records() { if [[ -n "${1}" ]]; then echo -e "${darkyellow}${1}${end}" ; fi ; }
+ipinfo_records() { if [[ -n "${1}" ]]; then echo -e "${lightred}${1}${end}" ; fi ; }
 yellow() { echo -e "${yellow}${1}${end}" ; }
 red() { echo -e "${red}${1}${end}" ; }
 check_valid_ip() { grep -oE "(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])" ; }
-check_ptr() { local ptr ; echo "${1}" | check_valid_ip | while read -r ptr; do dig +noall +answer -x "${ptr}" @8.8.8.8 ; done ; }
-ipinfo_org_only() { local ipinfo ; echo "${1}" | check_valid_ip | while read -r ipinfo; do curl -s ipinfo.io/"${ipinfo}" | grep "\"org\":" | xargs | cut -d',' -f1 ; done ; }
+check_ptr() { if [[ -n "${1}" ]]; then local ptr ; echo "${1}" | check_valid_ip | while read -r ptr; do dig +noall +answer -x "${ptr}" @8.8.8.8 ; done ; fi ; }
+ipinfo_org_only() { if [[ -n "${1}" ]]; then local ipinfo ; echo "${1}" | check_valid_ip | while read -r ipinfo; do curl -s ipinfo.io/"${ipinfo}" | grep "\"org\":" | xargs | cut -d',' -f1 ; done ; fi ; }
 dig_short() { dig +short @8.8.8.8 "${1}" "${2}" 2>&1 | grep -v "empty label" ; }
 
 check_hostname() {
@@ -33,42 +33,46 @@ check_hostname() {
   fi
   ns_record=$(dig_short ns "${roothostname}" | sort)
   a_record=$(dig_short a "${hostname}" | sort)
-  mx_record=$(dig_short MX "${hostname}" | sort)
+  mx_record=$(dig_short mx "${hostname}" | sort)
   mail_record=$(dig_short a mail."${hostname}" | sort)
   webmail_record=$(dig_short a webmail."${hostname}" | sort)
   txt_record=$(dig_short txt "${hostname}" | sort)
-  [[ -z ${a_record} ]] || ptr_a_record=$(check_ptr "${a_record}")
-  [[ -z ${mail_record} ]] || ptr_mail_record=$(check_ptr "${mail_record}")
-  [[ -z ${webmail_record} ]] || ptr_webmail_record=$(check_ptr "${webmail_record}")
-  [[ -z ${a_record} ]] || ipinfo_a_record=$(ipinfo_org_only "${a_record}")
-  [[ -z ${mail_record} ]] || ipinfo_mail_record=$(ipinfo_org_only "${mail_record}")
-  [[ -z ${webmail_record} ]] || ipinfo_webmail_record=$(ipinfo_org_only "${webmail_record}")
-  if [[ -z ${ns_record} ]] && [[ -z ${a_record} ]] && [[ -z ${mx_record} ]] && [[ -z ${mail_record} ]] && [[ -z ${webmail_record} ]] && [[ -z ${txt_record} ]]; then history -d "$(history 1 | awk '{print $1}')" ; red "Please Input Valid IP / Hostname... or Domain Not Found" ; return ; fi
+  ptr_a_record=$(check_ptr "${a_record}")
+  ptr_mail_record=$(check_ptr "${mail_record}")
+  ptr_webmail_record=$(check_ptr "${webmail_record}")
+  ipinfo_a_record=$(ipinfo_org_only "${a_record}")
+  ipinfo_mail_record=$(ipinfo_org_only "${mail_record}")
+  ipinfo_webmail_record=$(ipinfo_org_only "${webmail_record}")
+  if [[ -z ${ns_record} ]] && [[ -z ${a_record} ]] && [[ -z ${mx_record} ]] && [[ -z ${mail_record} ]] && [[ -z ${webmail_record} ]] && [[ -z ${txt_record} ]]; then
+    history -d "$(history 1 | awk '{print $1}')"
+    red "Please Input Valid IP / Hostname... or Domain Not Found"
+    return
+  fi
   # OUTPUT BELOW
   echo
   header "NS record for ${roothostname}"
-  [[ -z ${ns_record} ]] || records "${ns_record}"
+  records "${ns_record}"
   echo
   header "A record for ${hostname}"
-  [[ -z ${a_record} ]] || records "${a_record}"
-  [[ ${ptr_a_record} =~ "PTR" ]] && records "${ptr_a_record}"
-  [[ -z ${ipinfo_a_record} ]] || ipinfo_records "${ipinfo_a_record}"
+  records "${a_record}"
+  records "${ptr_a_record}"
+  ipinfo_records "${ipinfo_a_record}"
   echo
   header "MX record for ${hostname}"
-  [[ -z ${mx_record} ]] || records "${mx_record}"
+  records "${mx_record}"
   echo
   header "A record for mail.${hostname}"
-  [[ -z ${mail_record} ]] || records "${mail_record}"
-  [[ ${ptr_mail_record} =~ "PTR" ]] && records "${ptr_mail_record}"
-  [[ -z ${ipinfo_mail_record} ]] || ipinfo_records "${ipinfo_mail_record}"
+  records "${mail_record}"
+  records "${ptr_mail_record}"
+  ipinfo_records "${ipinfo_mail_record}"
   echo
   header "A record for webmail.${hostname}"
-  [[ -z ${webmail_record} ]] || records "${webmail_record}"
-  [[ ${ptr_webmail_record} =~ "PTR" ]] && records "${ptr_webmail_record}"
-  [[ -z ${ipinfo_webmail_record} ]] || ipinfo_records "${ipinfo_webmail_record}"
+  records "${webmail_record}"
+  records "${ptr_webmail_record}"
+  ipinfo_records "${ipinfo_webmail_record}"
   echo
   header "TXT record for ${hostname}"
-  [[ -z ${txt_record} ]] || records "${txt_record}"
+  records "${txt_record}"
   echo
 }
 
@@ -82,8 +86,8 @@ check_ip() {
   echo
   header "A record for ${ip}"
   records "${a_record}"
-  [[ ${ptr_a_record} =~ "PTR" ]] && records "${ptr_a_record}"
-  [[ -z ${ipinfo_a_record} ]] || ipinfo_records "${ipinfo_a_record}"
+  records "${ptr_a_record}"
+  ipinfo_records "${ipinfo_a_record}"
   echo
 }
 
