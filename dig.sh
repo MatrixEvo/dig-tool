@@ -35,8 +35,8 @@ check_hostname() {
   ns_record=$(dig_short ns "${roothostname}" | sort)
   a_record=$(dig_short a "${hostname}" | sort)
   mx_record=$(dig_short mx "${hostname}" | sort)
-  mail_record=$(dig_short a mail."${hostname}" | sort)
-  webmail_record=$(dig_short a webmail."${hostname}" | sort)
+  mail_record=$(dig_short a "mail.${hostname}" | sort)
+  webmail_record=$(dig_short a "webmail.${hostname}" | sort)
   txt_record=$(dig_short txt "${hostname}" | sort)
   # Error If No Info Found
   if [[ -z ${ns_record} ]] && [[ -z ${a_record} ]] && [[ -z ${mx_record} ]] && [[ -z ${mail_record} ]] && [[ -z ${webmail_record} ]] && [[ -z ${txt_record} ]]; then
