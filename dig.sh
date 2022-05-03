@@ -22,7 +22,7 @@ dig_short() { dig +short @8.8.8.8 "${1}" "${2}" 2>&1 | grep -v "empty label" ; }
 
 check_hostname() {
   local hostnamedotcount roothostname ns_record a_record mx_record mail_record webmail_record txt_record ptr_a_record ptr_mail_record ptr_webmail_record ipinfo_a_record ipinfo_mail_record ipinfo_webmail_record
-  # GATHERING INFO
+  # Checking for root hostname without subdomain
   hostnamedotcount=$(echo "${hostname}" | grep -o "\." | wc -l)
   roothostname="${hostname}"
   if [[ ${hostnamedotcount} -gt 1 ]]; then
@@ -31,23 +31,25 @@ check_hostname() {
       roothostname=$(echo "${hostname}" | cut -d'.' -f"$(("${hostnamedotcount}" - 1))"-)
     fi
   fi
+  # GATHERING INFO
   ns_record=$(dig_short ns "${roothostname}" | sort)
   a_record=$(dig_short a "${hostname}" | sort)
   mx_record=$(dig_short mx "${hostname}" | sort)
   mail_record=$(dig_short a mail."${hostname}" | sort)
   webmail_record=$(dig_short a webmail."${hostname}" | sort)
   txt_record=$(dig_short txt "${hostname}" | sort)
+  # Error If No Info Found
+  if [[ -z ${ns_record} ]] && [[ -z ${a_record} ]] && [[ -z ${mx_record} ]] && [[ -z ${mail_record} ]] && [[ -z ${webmail_record} ]] && [[ -z ${txt_record} ]]; then
+    history -d "$(history 1 | awk '{print $1}')"
+    red "Please Input Valid IP / Hostname... or Domain Not Found"
+    return
+  fi
   ptr_a_record=$(check_ptr "${a_record}")
   ptr_mail_record=$(check_ptr "${mail_record}")
   ptr_webmail_record=$(check_ptr "${webmail_record}")
   ipinfo_a_record=$(ipinfo_org_only "${a_record}")
   ipinfo_mail_record=$(ipinfo_org_only "${mail_record}")
   ipinfo_webmail_record=$(ipinfo_org_only "${webmail_record}")
-  if [[ -z ${ns_record} ]] && [[ -z ${a_record} ]] && [[ -z ${mx_record} ]] && [[ -z ${mail_record} ]] && [[ -z ${webmail_record} ]] && [[ -z ${txt_record} ]]; then
-    history -d "$(history 1 | awk '{print $1}')"
-    red "Please Input Valid IP / Hostname... or Domain Not Found"
-    return
-  fi
   # OUTPUT BELOW
   echo
   header "NS record for ${roothostname}"
