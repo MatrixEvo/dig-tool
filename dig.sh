@@ -51,7 +51,7 @@ ipinfo_org_only() {
   if [[ -n "${1}" ]]; then
     local ipinfo
     echo "${1}" | check_valid_ip | while read -r ipinfo; do
-      curl -s ipinfo.io/"${ipinfo}" | grep "\"org\":" | xargs | cut -d',' -f1
+      curl -s ipinfo.io/"${ipinfo}" | grep "\"org\":" | xargs | sed 's/.$//'
     done
   fi
 }
