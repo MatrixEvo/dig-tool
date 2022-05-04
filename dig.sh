@@ -42,7 +42,7 @@ check_ptr() {
   if [[ -n "${1}" ]]; then
     local ptr
     echo "${1}" | check_valid_ip | while read -r ptr; do
-      dig +noall +answer -x "${ptr}" @8.8.8.8
+      timeout 1.5 dig +noall +answer -x "${ptr}" @8.8.8.8
     done
   fi
 }
@@ -51,13 +51,13 @@ ipinfo_org_only() {
   if [[ -n "${1}" ]]; then
     local ipinfo
     echo "${1}" | check_valid_ip | while read -r ipinfo; do
-      curl -s ipinfo.io/"${ipinfo}" | grep "\"org\":" | xargs | sed 's/.$//'
+      timeout 1.5 curl -s ipinfo.io/"${ipinfo}" | grep "\"org\":" | xargs | sed 's/.$//'
     done
   fi
 }
 
 dig_short() {
-  dig +short @8.8.8.8 "${1}" "${2}" 2>&1 | grep -v "empty label" | sort
+  timeout 1.5 dig +short @8.8.8.8 "${1}" "${2}" 2>&1 | grep -v "empty label" | sort
 }
 
 check_hostname() {
@@ -72,12 +72,12 @@ check_hostname() {
     fi
   fi
   # GATHERING INFO
-  ns_record=$(dig_short ns "${roothostname}")
-  a_record=$(dig_short a "${hostname}")
-  mx_record=$(dig_short mx "${hostname}")
-  mail_record=$(dig_short a "mail.${hostname}")
-  webmail_record=$(dig_short a "webmail.${hostname}")
-  txt_record=$(dig_short txt "${hostname}")
+  ns_record=$(dig_short NS "${roothostname}")
+  a_record=$(dig_short A "${hostname}")
+  mx_record=$(dig_short MX "${hostname}")
+  mail_record=$(dig_short A "mail.${hostname}")
+  webmail_record=$(dig_short A "webmail.${hostname}")
+  txt_record=$(dig_short TXT "${hostname}")
   # Error If No Info Found
   if [[ -z ${ns_record} ]] && [[ -z ${a_record} ]] && [[ -z ${mx_record} ]] && [[ -z ${mail_record} ]] && [[ -z ${webmail_record} ]] && [[ -z ${txt_record} ]]; then
     history -d "$(history 1 | awk '{print $1}')"
