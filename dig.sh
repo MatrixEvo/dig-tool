@@ -42,7 +42,7 @@ check_ptr() {
   if [[ -n "${1}" ]]; then
     local ptr
     echo "${1}" | check_valid_ip | while read -r ptr; do
-      timeout 1.5 dig +noall +answer -x "${ptr}" @8.8.8.8
+      dig +noall +answer -x "${ptr}" @8.8.8.8
     done
   fi
 }
@@ -51,13 +51,13 @@ ipinfo_org_only() {
   if [[ -n "${1}" ]]; then
     local ipinfo
     echo "${1}" | check_valid_ip | while read -r ipinfo; do
-      timeout 1.5 curl -s ipinfo.io/"${ipinfo}" | grep "\"org\":" | xargs | sed 's/.$//'
+      curl -s ipinfo.io/"${ipinfo}" | grep "\"org\":" | xargs | sed 's/.$//'
     done
   fi
 }
 
 dig_short() {
-  timeout 1.5 dig +short @8.8.8.8 "${1}" "${2}" 2>&1 | grep -v "empty label" | sort
+  dig +short @8.8.8.8 "${1}" "${2}" 2>&1 | grep -v "empty label" | sort
 }
 
 check_hostname() {
