@@ -136,7 +136,7 @@ start() {
   while IFS= read -rep "$(yellow "Input IP / Hostname : ")" inputhostname </dev/tty ; do
     unset ip hostname
     ip=$(echo "${inputhostname}" | check_valid_ip | head -n1)
-    hostname=$(echo "${inputhostname}" | tr '[:upper:]' '[:lower:]' | sed 's/[=+,\"<> !@#$%^&*()\/:?;]/\n/g' | grep "\." | head -n1 )
+    hostname=$(echo "${inputhostname}" | tr '[:upper:]' '[:lower:]' | cut -d'@' -f2 | tr -c '0-9a-z.-' '\n' | grep "\." | head -n1 )
 
     if [[ -z ${ip} ]] && [[ -z ${hostname} ]] || [[ ${#hostname} -le 3 ]] || [[ -z $(echo "${hostname}" | cut -d'.' -f1) ]] || [[ -z $(echo "${hostname}" | cut -d'.' -f2) ]];then
       red "Please Input Valid IP / Hostname..."
