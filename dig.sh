@@ -140,10 +140,7 @@ start() {
 
     if [[ -z ${ip} ]] && [[ -z ${hostname} ]] || [[ ${#hostname} -le 3 ]] || [[ -z $(echo "${hostname}" | cut -d'.' -f1) ]] || [[ -z $(echo "${hostname}" | cut -d'.' -f2) ]];then
       red "Please Input Valid IP / Hostname..."
-      break
-    fi
-
-    if [[ -n ${ip} ]]; then
+    elif [[ -n ${ip} ]]; then
       history -s "${ip}"
       check_ip
     elif [[ -n ${hostname} ]] ; then
@@ -156,6 +153,4 @@ start() {
   done
 }
 
-while true; do
-  start
-done
+start
