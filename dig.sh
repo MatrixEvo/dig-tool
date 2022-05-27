@@ -57,7 +57,7 @@ ipinfo_org_only() {
 }
 
 dig_short() {
-  dig +short @8.8.8.8 "${1}" "${2}" 2>&1 | grep -v "empty label" | sort
+  dig +short @8.8.8.8 "${1}" "${2}" 2>&1 | grep -v "empty label" | sort -h
 }
 
 check_hostname() {
@@ -81,7 +81,7 @@ check_hostname() {
   # Error If No Info Found
   if [[ -z ${ns_record} ]] && [[ -z ${a_record} ]] && [[ -z ${mx_record} ]] && [[ -z ${mail_record} ]] && [[ -z ${webmail_record} ]] && [[ -z ${txt_record} ]]; then
     history -d "$(history 1 | awk '{print $1}')"
-    red "Please Input Valid IP / Hostname... or Domain ${hostname} Not Found"
+    red "Please Input Valid IP / Hostname... or Domain ${hostname} Not Found or No DNS Records"
     return
   fi
   ptr_a_record=$(check_ptr "${a_record}")
