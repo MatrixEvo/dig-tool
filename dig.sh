@@ -9,6 +9,7 @@ red="\033[0;31m"
 lightred="\033[1;31m"
 yellow="\033[1;33m"
 HISTCONTROL=erasedups
+dns_server=8.8.8.8
 
 header() {
   echo -e "${blue}${1}${end}"
@@ -42,7 +43,7 @@ check_ptr() {
   if [[ -n "${1}" ]]; then
     local ptr
     echo "${1}" | check_valid_ip | while read -r ptr; do
-      dig +noall +answer -x "${ptr}" @8.8.8.8
+      dig -4 +noall +answer -x "${ptr}" @"${dns_server}"
     done
   fi
 }
@@ -51,13 +52,13 @@ ipinfo_org_only() {
   if [[ -n "${1}" ]]; then
     local ipinfo
     echo "${1}" | check_valid_ip | while read -r ipinfo; do
-      curl -s ipinfo.io/"${ipinfo}" | grep "\"org\":" | xargs | sed 's/.$//'
+      curl -4s ipinfo.io/"${ipinfo}" | grep "\"org\":" | xargs | sed 's/.$//'
     done
   fi
 }
 
 dig_short() {
-  dig +short @8.8.8.8 "${1}" "${2}" 2>&1 | grep -v "empty label" | sort -h
+  dig -4 +short @"${dns_server}" "${1}" "${2}" 2>&1 | grep -v "empty label" | sort -h
 }
 
 check_hostname() {
