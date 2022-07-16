@@ -2,37 +2,37 @@
 #Dig tool that checks NS , A , MX , TXT , PTR with IP Org
 #Try using without downloading >" curl -s https://raw.githubusercontent.com/MatrixEvo/dig-tool/main/dig.sh | bash "<
 
-end="\033[0m"
-darkyellow="\033[0;33m"
-blue="\033[1;34m"
-red="\033[0;31m"
-lightred="\033[1;31m"
-yellow="\033[1;33m"
+#end="\033[0m"
+#darkyellow="\033[0;33m"
+#blue="\033[1;34m"
+#red="\033[0;31m"
+#lightred="\033[1;31m"
+#yellow="\033[1;33m"
 HISTCONTROL=erasedups
 dns_server=8.8.8.8
 
 header() {
-  echo -e "${blue}${1}${end}"
+  echo "${1}" #-e "${blue}${1}${end}"
 }
 
 records() {
   if [[ -n "${1}" ]]; then
-    echo -e "${darkyellow}${1}${end}"
+    echo "${1}" #-e "${darkyellow}${1}${end}"
   fi
 }
 
 ipinfo_records() {
   if [[ -n "${1}" ]]; then
-    echo -e "${lightred}${1}${end}"
+    echo "${1}" #-e "${lightred}${1}${end}"
   fi
 }
 
 yellow() {
-  echo -e "${yellow}${1}${end}"
+  echo "${1}" #-e "${yellow}${1}${end}"
 }
 
 red() {
-  echo -e "${red}${1}${end}"
+  echo -e "${1}\n" #-e "${red}${1}${end}\n"
 }
 
 check_valid_ip() {
@@ -81,7 +81,7 @@ check_hostname() {
   txt_record=$(dig_short TXT "${hostname}")
   # Error If No Info Found
   if [[ -z ${ns_record} ]] && [[ -z ${a_record} ]] && [[ -z ${mx_record} ]] && [[ -z ${mail_record} ]] && [[ -z ${webmail_record} ]] && [[ -z ${txt_record} ]]; then
-    history -d "$(history 1 | awk '{print $1}')"
+    # history -d "$(history 1 | awk '{print $1}')" - Uncomment to delete the last invalid entry from history
     red "Please Input Valid IP / Hostname... or Domain ${hostname} Not Found or No DNS Records"
     return
   fi
@@ -133,25 +133,33 @@ check_ip() {
   echo
 }
 
-start() {
-  while IFS= read -rep "$(yellow "Input IP / Hostname : ")" inputhostname </dev/tty ; do
-    unset ip hostname
-    ip=$(echo "${inputhostname}" | check_valid_ip | head -n1)
-    hostname=$(echo "${inputhostname}" | tr '[:upper:]' '[:lower:]' | cut -d'@' -f2 | tr -c '0-9a-z._\-' '\n' | grep "\." | head -n1 )
+filter() {
+  unset ip hostname
+  ip=$(echo "${1}" | check_valid_ip | head -n1)
+  hostname=$(echo "${1}" | tr '[:upper:]' '[:lower:]' | cut -d'@' -f2 | tr -c '0-9a-z._\-' '\n' | grep "\." | head -n1 )
 
-    if [[ -z ${ip} ]] && [[ -z ${hostname} ]] || [[ ${#hostname} -le 3 ]] || [[ -z $(echo "${hostname}" | cut -d'.' -f1) ]] || [[ -z $(echo "${hostname}" | cut -d'.' -f2) ]];then
-      red "Please Input Valid IP / Hostname..."
-    elif [[ -n ${ip} ]]; then
-      history -s "${ip}"
-      check_ip
-    elif [[ -n ${hostname} ]] ; then
-      if [[ ${hostname: -1} == "." ]]; then
-        hostname="${hostname%?}"
-      fi
-      history -s "${hostname}"
-      check_hostname
+  if [[ -z ${ip} ]] && [[ -z ${hostname} ]] || [[ ${#hostname} -le 3 ]] || [[ -z $(echo "${hostname}" | cut -d'.' -f1) ]] || [[ -z $(echo "${hostname}" | cut -d'.' -f2) ]];then
+    red "Please Input Valid IP / Hostname..."
+  elif [[ -n ${ip} ]]; then
+    history -s "${ip}"
+    check_ip
+  elif [[ -n ${hostname} ]] ; then
+    if [[ ${hostname: -1} == "." ]]; then
+      hostname="${hostname%?}"
     fi
-  done
+    history -s "${hostname}"
+    check_hostname
+  fi
 }
 
-start
+start() {
+  if [[ $1 ]]; then
+    filter "${1}"
+  else
+    while IFS= read -rep "$(yellow "Input IP / Hostname : ")" user_input </dev/tty ; do
+      filter "${user_input}"
+    done
+  fi
+}
+
+start "${1}"
