@@ -28,14 +28,23 @@ else
   history -w "${history_file}"
 fi
 
-if [[ $* =~ "--color" ]]; then
-  end="\033[0m"
-  darkyellow="\033[0;33m"
-  blue="\033[1;34m"
-  red="\033[0;31m"
-  lightred="\033[1;31m"
-  yellow="\033[1;33m"
-fi
+color_toggle() {
+  if [[ ${1} == "on" ]]; then
+    end="\033[0m"
+    darkyellow="\033[0;33m"
+    blue="\033[1;34m"
+    red="\033[0;31m"
+    lightred="\033[1;31m"
+    yellow="\033[1;33m"
+  else
+    end=""
+    darkyellow=""
+    blue=""
+    red=""
+    lightred=""
+    yellow=""
+  fi
+}
 
 header() {
   echo -e "${blue}${1}${end}"
@@ -190,6 +199,7 @@ additional_functions() {
     echo
     yellow "Functions Available :"
     echo "  debug <on|off> - Turns on or off debug mode for this script"
+    echo "  color <on|off> - Turns this script color on or off"
     echo "  history <search> - View or Search Input History"
     echo "  chist - Clear Input History"
     echo "  clear - Clear screen"
@@ -221,6 +231,14 @@ additional_functions() {
     elif [[ ${2} == "off" ]]; then
       echo "Turning Debug Off"
       set +x
+    fi
+  elif [[ ${1} =~ ^"color" ]]; then
+    if [[ ${2} == "on" ]] || [[ -z ${2} ]]; then
+      echo "Turning Color On"
+      color_toggle "on"
+    elif [[ ${2} == "off" ]]; then
+      echo "Turning Color Off"
+      color_toggle "off"
     fi
   elif [[ ${1} == "history" ]]; then
     if [[ -z ${2} ]]; then
@@ -339,8 +357,8 @@ repeat_functions() {
 
 filter() {
   local ip hostname
-  if [[ ${1} =~ ^(ping |pass |whois |mail |nc |telnet |web |ssl |debug |dns |history ) ]] || \
-    [[ ${1} =~ ^(\?|alphassl|debug|chist|clear|dns|gencsr|help|history|ip|mail|nc|orgssl|p2p|pass|ping|pmp|ssl|telnet|web|whois|letsencrypt)$ ]]; then
+  if [[ ${1} =~ ^(ping |pass |whois |mail |nc |telnet |web |ssl |debug |dns |history |color ) ]] || \
+    [[ ${1} =~ ^(\?|alphassl|debug|color|chist|clear|dns|gencsr|help|history|ip|mail|nc|orgssl|p2p|pass|ping|pmp|ssl|telnet|web|whois|letsencrypt)$ ]]; then
     history -s "${1}"
     additional_functions ${@}
     return
@@ -378,6 +396,9 @@ start() {
   if ! grep -q "${today}" "${history_file}"; then
     history -s "============================== ${today} =============================="
     history -w "${history_file}"
+  fi
+  if [[ $* =~ "--color" ]]; then
+    color_toggle "on"
   fi
   if [[ $1 ]] && [[ ! $1 == "--color" ]]; then
     user_input=${@/#--color /}
