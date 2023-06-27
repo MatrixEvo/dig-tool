@@ -35,55 +35,31 @@ if [[ $* =~ "--color" ]]; then
   red="\033[0;31m"
   lightred="\033[1;31m"
   yellow="\033[1;33m"
-
-  header() {
-    echo -e "${blue}${1}${end}"
-  }
-
-  records() {
-    if [[ -n "${1}" ]]; then
-      echo -e "${darkyellow}${1}${end}"
-    fi
-  }
-
-  ipinfo_records() {
-    if [[ -n "${1}" ]]; then
-      echo -e "${lightred}${1}${end}"
-    fi
-  }
-
-  yellow() {
-    echo -e "${yellow}${1}${end}"
-  }
-
-  red() {
-    echo -e "${red}${1}${end}\n"
-  }
-else
-  header() {
-    echo -e "${1}"
-  }
-
-  records() {
-    if [[ -n "${1}" ]]; then
-      echo -e "${1}"
-    fi
-  }
-
-  ipinfo_records() {
-    if [[ -n "${1}" ]]; then
-      echo -e "${1}"
-    fi
-  }
-
-  yellow() {
-    echo -e "${1}"
-  }
-
-  red() {
-    echo -e "${1}\n"
-  }
 fi
+
+header() {
+  echo -e "${blue}${1}${end}"
+}
+
+records() {
+  if [[ -n "${1}" ]]; then
+    echo -e "${darkyellow}${1}${end}"
+  fi
+}
+
+ipinfo_records() {
+  if [[ -n "${1}" ]]; then
+    echo -e "${lightred}${1}${end}"
+  fi
+}
+
+yellow() {
+  echo -e "${yellow}${1}${end}"
+}
+
+red() {
+  echo -e "${red}${1}${end}\n"
+}
 
 check_valid_ipv4() {
   grep -oE "(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
@@ -210,7 +186,7 @@ additional_functions() {
   if [[ ${1} == "?" ]] || [[ ${1} == "help" ]]; then
     header "Dig tool that checks NS , A , MX , TXT , PTR with IP Org from ipinfo.io"
     header "By MatrixEvo"
-    header "Last Updated - 3rd May 2023"
+    header "Last Updated - 27th June 2023"
     echo
     yellow "Functions Available :"
     echo "  debug <on|off> - Turns on or off debug mode for this script"
