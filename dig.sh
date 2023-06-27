@@ -397,9 +397,6 @@ start() {
     history -s "============================== ${today} =============================="
     history -w "${history_file}"
   fi
-  if [[ $* =~ "--color" ]]; then
-    color_toggle "on"
-  fi
   if [[ $1 ]] && [[ ! $1 == "--color" ]]; then
     user_input=${@/#--color /}
     time filter "${user_input}"
@@ -411,5 +408,9 @@ start() {
     done
   fi
 }
+
+if [[ $* =~ "--color" ]]; then
+  color_toggle "on"
+fi
 
 start "${*}"
