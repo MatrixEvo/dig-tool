@@ -257,18 +257,12 @@ additional_functions() {
       echo "dns g - Google - 8.8.8.8"
       echo "dns c - Cloudflare - 1.1.1.1"
       echo "dns o - OpenDNS - 208.67.222.222"
-      echo "dns u1 - Hosted Unbound DNS 1 - 183.81.162.41"
-      echo "dns u2 - Hosted Unbound DNS 2 - 14.102.148.71"
     elif [[ "${2}" == "g" ]]; then
       dns_server="8.8.8.8"
     elif [[ "${2}" == "c" ]]; then
       dns_server="1.1.1.1"
     elif [[ "${2}" == "o" ]]; then
       dns_server="208.67.222.222"
-    elif [[ "${2}" == "u1" ]]; then
-      dns_server="183.81.162.41"
-    elif [[ "${2}" == "u2" ]]; then
-      dns_server="14.102.148.71"
     elif [[ -n $(check_valid_ipv4 <<<"${2}") ]]; then
       dns_server="$(check_valid_ipv4 <<<"${2}")"
     elif [[ -n $(echo "${2}" | tr '[:upper:]' '[:lower:]' | cut -d'@' -f2 | tr -c '0-9a-z._\-' '\n' | grep "\." | head -n1) ]]; then
